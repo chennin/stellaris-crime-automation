@@ -32,7 +32,7 @@ SUPPORTED_VERSION = "3.11.*"
 # Sound, Spaceships, Species, Technologies, Total Conversion, Translation, Utilities
 TAGS = [ "Gameplay" ]
 # 3 = unlisted, 2 = hidden, 1 = friends, 0 = public
-VISIBILITY = 3
+VISIBILITY = 0
 
 from snippets import *
 
