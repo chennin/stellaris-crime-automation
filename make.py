@@ -242,7 +242,7 @@ except Exception as e:
   fail(e, e)
 
 process_crime("common/colony_automation_exceptions/00_crisis_exceptions.txt", "zzz_fl_crime.txt")
-process_job("common/pop_jobs/02_specialist_jobs.txt", "zzz_fl_crime_specialist.txt")
-process_job("common/pop_jobs/04_gestalt_jobs.txt", "zzz_fl_crime_gestalt.txt")
+process_job("common/pop_jobs/02_specialist_jobs.txt", "99_fl_crime_specialist.txt")
+process_job("common/pop_jobs/04_gestalt_jobs.txt", "99_fl_crime_gestalt.txt")
 make_descriptor()
 make_steamcmd()
