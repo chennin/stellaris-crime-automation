@@ -41,24 +41,24 @@ enforcer_increase_gestalt_str = f"""
 """
 precinct_increase_str = f"""
                     planet_stability < {BAD_STABILITY_THRESH}
-					AND = {{
-						planet_crime > {CRIME_WAVE_THRESH}
-						OR = {{
+                    AND = {{
+                        planet_crime > {CRIME_WAVE_THRESH}
+                        OR = {{
                             has_modifier = criminal_underworld
                             has_modifier = gang_wars
                             has_modifier = center_of_drug_trade
                             has_modifier = mob_rule
-						}}
-					}}
+                        }}
+                    }}
 """
 precinct_increase_gestalt_str = f"""
-					AND = {{
-						planet_crime > {CRIME_WAVE_THRESH}
-						OR = {{
-							has_modifier = drone_deviancy
-							has_modifier = drone_corruption
-						}}
-					}}
+                    AND = {{
+                        planet_crime > {CRIME_WAVE_THRESH}
+                        OR = {{
+                            has_modifier = drone_deviancy
+                            has_modifier = drone_corruption
+                        }}
+                    }}
 """
 patrol_drone_wave_str = f"""
                 modifier = {{

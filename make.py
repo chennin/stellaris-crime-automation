@@ -124,8 +124,8 @@ def process_job(infilename, outfilename):
             mcele.comparison = "<"
  
       # Vanilla has many weight modifiers, do a sanity check
-      if mcount < 4:
-        fail(f"Suspiciously low weight modifiers in {ele.name}")
+      if mcount < 5:
+        fail(f"Suspiciously low weight modifiers ({mcount}) in {ele.name}?")
       # Add the modified top level element to our write list
       outlist.append(ele)
   write_file(outlist, dirname, outfilename)
@@ -147,38 +147,37 @@ def process_crime(infilename, outfilename):
   # Process crime automation and add to it
   for ele in cw:
     if ele.name in [ "automate_crime_management", "automate_crime_management_gestalt" ]:
-      # Enforcer job openings
+      # Handle Enforcer job openings
       if not ele.hasAttribute("job_changes"):
         fail(f"{ele.name} missing job_changes??")
-      else:
-        jobele = ele.getElement("job_changes")
-        # Add stability conditions to non gestalt only (hunter seeker drones do
-        # not improve stability)
-        if ele.name == "automate_crime_management":
-          # enforcer_reduce block: Vanilla has one 
-          if sum(1 for x in jobele.getElements("enforcer_reduce")) != 1:
-            fail(f"Unexpected number of enforcer_reduce blocks in {ele.name}, what did vanilla change?")
-          redele = jobele.getElement("enforcer_reduce")
-          if not redele.hasAttribute("available"):
-            fail(f"{ele.name} > enforcer_reduce > available missing")
-          redele.getElement("available").subelements.extend( 
-                        cwp.stringToCW("planet_stability > @stabilitylevel3")
-                        )
-          # enforcer_increase block: Vanilla has one 
-          if sum(1 for x in jobele.getElements("enforcer_increase")) != 1:
-            fail(f"Unexpected number of enforcer_increase blocks in {ele.name}, what did vanilla change?")
-          incele = jobele.getElement("enforcer_increase")
-          if not incele.hasAttribute("available"):
-            fail(f"{ele.name} > enforcer_increase > available missing")
-          incavaele = incele.getElement("available")
-          existing_inc_ava_str = cwp.CWToString(incavaele.subelements)
-          # Assume all vanilla conditions can be OR'd with our stability condition
-          incavaele.subelements = cwp.stringToCW(f"OR = {{ {existing_inc_ava_str} planet_stability < @stabilitylevel2 }}")
+      jobele = ele.getElement("job_changes")
+      # Add stability conditions to non gestalt only (hunter seeker drones do
+      # not improve stability)
+      if ele.name == "automate_crime_management":
+        # enforcer_reduce block: Vanilla has one 
+        if sum(1 for x in jobele.getElements("enforcer_reduce")) != 1:
+          fail(f"Unexpected number of enforcer_reduce blocks in {ele.name}, what did vanilla change?")
+        redele = jobele.getElement("enforcer_reduce")
+        if not redele.hasAttribute("available"):
+          fail(f"{ele.name} > enforcer_reduce > available missing")
+        redele.getElement("available").subelements.extend( 
+                      cwp.stringToCW("planet_stability > @stabilitylevel3")
+                      )
+        # enforcer_increase block: Vanilla has one 
+        if sum(1 for x in jobele.getElements("enforcer_increase")) != 1:
+          fail(f"Unexpected number of enforcer_increase blocks in {ele.name}, what did vanilla change?")
+        incele = jobele.getElement("enforcer_increase")
+        if not incele.hasAttribute("available"):
+          fail(f"{ele.name} > enforcer_increase > available missing")
+        incavaele = incele.getElement("available")
+        existing_inc_ava_str = cwp.CWToString(incavaele.subelements)
+        # Assume all vanilla conditions can be OR'd with our stability condition
+        incavaele.subelements = cwp.stringToCW(f"OR = {{ {existing_inc_ava_str} planet_stability < @stabilitylevel2 }}")
 
         # Add another stanza for really bad planets to both gestalt and non
-        jobele.subelements.extend(enforcer_increase[ele.name])
+      jobele.subelements.extend(enforcer_increase[ele.name])
 
-      # Precinct building
+      # Handle building Precincts
       if not ele.hasAttribute("buildings"):
         fail(f"{ele.name} missing buildings??")
       buildele = ele.getElement("buildings")
@@ -241,6 +240,8 @@ try:
 except Exception as e:
   fail(e, e)
 
+#######################################
+# Main logic
 process_crime("common/colony_automation_exceptions/00_crisis_exceptions.txt", "zzz_fl_crime.txt")
 process_job("common/pop_jobs/02_specialist_jobs.txt", "99_fl_crime_specialist.txt")
 process_job("common/pop_jobs/04_gestalt_jobs.txt", "99_fl_crime_gestalt.txt")
