@@ -25,7 +25,7 @@ cwp.workshop_path = os.path.expanduser( os.path.expandvars( "~/stellaris-worksho
 cwp.mod_docs_path = os.path.expanduser( os.path.expandvars( "~/stellaris-mod" ) )
 cwp.vanilla_path = os.path.expanduser( os.path.expandvars( "~/stellaris-game" ) )
 MOD_NAME = "Better Crime Automation"
-VERSION = "1"
+VERSION = "2"
 SUPPORTED_VERSION = "3.12.*"
 # Balance, Buildings, Diplomacy, Economy, Events, Fixes, Font, Galaxy
 # Generation, Gameplay, Graphics, Leaders, Loading Screen, Military, Overhaul,
@@ -161,7 +161,7 @@ def process_crime(infilename, outfilename):
         if not redele.hasAttribute("available"):
           fail(f"{ele.name} > enforcer_reduce > available missing")
         redele.getElement("available").subelements.extend( 
-                      cwp.stringToCW("planet_stability > @stabilitylevel3")
+                      cwp.stringToCW("planet_stability > @stabilitylevel3 NAND = { has_branch_office = yes branch_office_owner = { is_criminal_syndicate = yes } }")
                       )
         # enforcer_increase block: Vanilla has one 
         if sum(1 for x in jobele.getElements("enforcer_increase")) != 1:
@@ -174,7 +174,7 @@ def process_crime(infilename, outfilename):
         # Assume all vanilla conditions can be OR'd with our stability condition
         incavaele.subelements = cwp.stringToCW(f"OR = {{ {existing_inc_ava_str} planet_stability < @stabilitylevel2 }}")
 
-        # Add another stanza for really bad planets to both gestalt and non
+      # Add another stanza for really bad planets to both gestalt and non
       jobele.subelements.extend(enforcer_increase[ele.name])
 
       # Handle building Precincts
@@ -235,7 +235,7 @@ try:
   precinct_increase["automate_crime_management"] = cwp.stringToCW(precinct_increase_str)
   precinct_increase["automate_crime_management_gestalt"] = cwp.stringToCW(precinct_increase_gestalt_str)
   crime_wave = {}
-  crime_wave["enforcer"] = cwp.stringToCW(enforcer_wave_str)
+  crime_wave["enforcer"] = cwp.stringToCW(enforcer_wave_str) + cwp.stringToCW(enforcer_branch_str)
   crime_wave["patrol_drone"] = cwp.stringToCW(patrol_drone_wave_str)
 except Exception as e:
   fail(e, e)

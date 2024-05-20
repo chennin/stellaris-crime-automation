@@ -37,6 +37,11 @@ automate_crime_management = {
 							has_modifier = mob_rule
 						}
 					}
+					AND = {
+						planet_crime > 0
+						has_branch_office = yes
+						branch_office_owner = { is_criminal_syndicate = yes }
+					}
 				}
 			}
 		}
@@ -46,6 +51,10 @@ automate_crime_management = {
 			available = {
 				planet_crime < 1
 				planet_stability > @stabilitylevel3
+				NAND = {
+					has_branch_office = yes
+					branch_office_owner = { is_criminal_syndicate = yes }
+				}
 			}
 			job = enforcer
 			amount = -1
@@ -72,6 +81,11 @@ automate_crime_management = {
 							has_modifier = center_of_drug_trade
 							has_modifier = mob_rule
 						}
+					}
+					AND = {
+						planet_crime > 0
+						has_branch_office = yes
+						branch_office_owner = { is_criminal_syndicate = yes }
 					}
 				}
 			}
