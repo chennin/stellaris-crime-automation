@@ -79,7 +79,7 @@ enforcer = {
 				}
 			}
 		}
-		planet_jobs_ruler_produces_mult = 0.05
+		planet_jobs_ruler_produces_mult = 0.10
 	}
 	weight = {
 		weight = @specialist_job_weight
