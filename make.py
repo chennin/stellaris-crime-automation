@@ -26,7 +26,7 @@ cwp.mod_docs_path = os.path.expanduser( os.path.expandvars( "~/stellaris-mod" ) 
 cwp.vanilla_path = os.path.expanduser( os.path.expandvars( "~/stellaris-game" ) )
 MOD_NAME = "Better Crime Automation"
 VERSION = "2"
-SUPPORTED_VERSION = "v3.13.*"
+SUPPORTED_VERSION = "v3.14.*"
 # Balance, Buildings, Diplomacy, Economy, Events, Fixes, Font, Galaxy
 # Generation, Gameplay, Graphics, Leaders, Loading Screen, Military, Overhaul,
 # Sound, Spaceships, Species, Technologies, Total Conversion, Translation, Utilities
