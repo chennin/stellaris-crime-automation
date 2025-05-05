@@ -1,86 +1,116 @@
 # Better Crime Automation
 enforcer = {
-	category = specialist
-	condition_string = BATTLE_THRALL_JOB_TRIGGER
-	building_icon = building_precinct_house
-	clothes_texture_index = 5
+	category = dystopian_specialist
+	swappable_data = {
+		default = {
+			condition_string = BATTLE_THRALL_JOB_TRIGGER
+			building_icon = building_precinct_house
+		}
+		swap_type = {
+			trigger = { enforcer_is_educator_trigger = yes }
+			name = educator
+			desc = educator
+			icon = educator
+			building_icon = building_state_academy
+			condition_string = BATTLE_THRALL_JOB_TRIGGER
+			weight = 10
+		}
+		swap_type = {
+			trigger = { enforcer_is_telepath_trigger = yes }
+			name = telepath
+			desc = telepath
+			icon = telepath
+			building_icon = building_psi_corps
+			condition_string = SPECIALIST_JOB_TRIGGER
+			weight = 25
+		}
+	}
+	tags = {
+		crime
+		enforcer
+		telepath
+	}
 	possible_pre_triggers = {
 		has_owner = yes
 		is_being_purged = no
 		is_being_assimilated = no
 		is_sapient = yes
 	}
-	possible = { battle_thrall_job_check_trigger = yes }
+	possible = {
+		if = {
+			limit = {
+				planet = { enforcer_is_telepath_trigger = no }
+			}
+			battle_thrall_job_check_trigger = yes
+		}
+		else = {
+			OR = {
+				has_trait = trait_latent_psionic
+				has_trait = trait_psionic
+			}
+		}
+	}
 	resources = {
 		category = planet_enforcers
+		inline_script = jobs/job_enforcer_triggered_resources
+		produces = {
+			trigger = { enforcer_is_educator_trigger = yes }
+			unity = 5
+		}
 		produces = {
 			trigger = {
-				exists = owner
-				owner = { has_active_tradition = tr_domination_judgment_corps }
+				exists = planet
+				planet = { enforcer_is_telepath_trigger = yes }
 			}
-			unity = 1
+			unity = 9
+		}
+		produces = {
+			trigger = {
+				exists = planet
+				planet = { enforcer_is_telepath_trigger = yes }
+				exists = owner
+				owner = { has_country_flag = whisperers_covenant_confirmed }
+			}
+			physics_research = 3
+			engineering_research = 3
+			society_research = 3
+		}
+		produces = {
+			trigger = {
+				exists = planet
+				planet = { enforcer_is_telepath_trigger = yes }
+				exists = owner
+				owner = { has_country_flag = whisperers_covenant_rank_1 }
+			}
+			physics_research = 3
+			engineering_research = 3
+			society_research = 3
+		}
+		upkeep = {
+			trigger = { enforcer_is_educator_trigger = yes }
+			consumer_goods = 1
 		}
 		upkeep = {
 			trigger = {
 				exists = planet
-				planet = { has_modifier = anticrime_campaign }
+				planet = { enforcer_is_telepath_trigger = yes }
 			}
-			energy = 2
+			energy = 1
 		}
 	}
-	pop_modifier = { pop_defense_armies_add = 2 }
 	triggered_planet_modifier = {
-		potential = {
-			exists = owner
-			owner = {
-				exists = ruler
-				ruler = { has_trait = leader_trait_legendary_harsh_ruler }
-			}
-		}
-		pop_happiness = -0.025
-	}
-	planet_modifier = {
+		potential = { enforcer_is_educator_trigger = no }
 		planet_crime_add = -25
+		planet_defense_armies_add = 2
 		planet_stability_add = 1
 	}
 	triggered_planet_modifier = {
-		potential = {
-			exists = planet
-			planet = { has_modifier = anticrime_campaign }
-		}
-		modifier = { planet_crime_add = -10 }
+		potential = { enforcer_is_educator_trigger = yes }
+		planet_crime_add = -20
+		planet_defense_armies_add = 1
+		pop_government_ethic_attraction = 0.1
 	}
-	triggered_planet_modifier = {
-		potential = { has_trait = trait_cyborg_integrated_weaponry }
-		modifier = { planet_crime_add = -5 }
-	}
-	triggered_planet_modifier = {
-		potential = { has_trait = trait_robot_integrated_weaponry }
-		modifier = { planet_crime_no_happiness_add = -5 }
-	}
-	triggered_planet_modifier = {
-		potential = {
-			exists = owner
-			owner = {
-				is_cyber_dictatorial = yes
-				has_country_flag = cyber_individualist
-			}
-		}
-		planet_cyborg_jobs_produces_mult = 0.025
-	}
-	triggered_planet_modifier = {
-		potential = {
-			exists = owner
-			owner = {
-				is_oligarchic_authority = yes
-				OR = {
-					has_country_flag = synth_physical
-					has_country_flag = synth_virtual
-				}
-			}
-		}
-		planet_jobs_ruler_produces_mult = 0.10
-	}
+	inline_script = jobs/job_enforcer_additional_modifiers
 	weight = {
 		weight = @specialist_job_weight
 		modifier = {
@@ -88,19 +118,10 @@ enforcer = {
 			owner = { has_active_tradition = tr_domination_judgment_corps }
 		}
 		modifier = {
-			factor = 10
-			has_job = enforcer
+			mult = value:job_weights_modifier|JOB|enforcer|RESOURCE|unity|
+			planet = { enforcer_is_telepath_trigger = yes }
 		}
-		modifier = {
-			factor = 10
-			planet = { planet_crime > 15 }
-			NOT = { has_job = enforcer }
-		}
-		modifier = {
-			factor = 0.01
-			planet = { planet_crime < 10 }
-			NOT = { has_job = enforcer }
-		}
+		modifier = { factor = 50 }
 		modifier = {
 			factor = 0.2
 			has_citizenship_rights = no
@@ -173,17 +194,23 @@ enforcer = {
 		modifier = {
 			factor = 2
 			planet = { planet_stability < @stabilitylevel3 }
-			NOT = { has_job = enforcer }
 		}
 		modifier = {
 			factor = 10
 			planet = { planet_stability < @stabilitylevel2 }
-			NOT = { has_job = enforcer }
 		}
 		modifier = {
 			factor = 20
 			planet = { planet_stability < @stabilitylevel1 }
-			NOT = { has_job = enforcer }
+		}
+	}
+	promotion = {
+		time = @standard_promotion_time
+		effect = {
+			pop_amount_change_category = {
+				CATEGORY = specialist
+				AMOUNT = local_pop_amount
+			}
 		}
 	}
 }

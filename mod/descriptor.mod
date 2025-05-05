@@ -1,6 +1,6 @@
 name="Better Crime Automation"
-version="2"
-supported_version="v3.14.*"
+version="3"
+supported_version="v4.0.*"
 tags={
 	"Gameplay"
 }

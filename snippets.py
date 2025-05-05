@@ -114,16 +114,13 @@ enforcer_stability_str = f"""
                 modifier = {{
                         factor = 2
                         planet = {{ planet_stability < {GOOD_STABILITY_THRESH} }}
-                        NOT = {{ has_job = enforcer }}
                 }}
                 modifier = {{
                         factor = 10
                         planet = {{ planet_stability < {BAD_STABILITY_THRESH} }}
-                        NOT = {{ has_job = enforcer }}
                 }}
                 modifier = {{
                         factor = 20
                         planet = {{ planet_stability < {VERY_BAD_STABILITY_THRESH} }}
-                        NOT = {{ has_job = enforcer }}
                 }}
 """

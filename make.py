@@ -25,8 +25,8 @@ cwp.workshop_path = os.path.expanduser( os.path.expandvars( "~/stellaris-worksho
 cwp.mod_docs_path = os.path.expanduser( os.path.expandvars( "~/stellaris-mod" ) )
 cwp.vanilla_path = os.path.expanduser( os.path.expandvars( "~/stellaris-game" ) )
 MOD_NAME = "Better Crime Automation"
-VERSION = "2"
-SUPPORTED_VERSION = "v3.14.*"
+VERSION = "3"
+SUPPORTED_VERSION = "v4.0.*"
 # Balance, Buildings, Diplomacy, Economy, Events, Fixes, Font, Galaxy
 # Generation, Gameplay, Graphics, Leaders, Loading Screen, Military, Overhaul,
 # Sound, Spaceships, Species, Technologies, Total Conversion, Translation, Utilities
@@ -148,6 +148,7 @@ def process_crime(infilename, outfilename):
   for ele in cw:
     if ele.name in [ "automate_crime_management", "automate_crime_management_gestalt" ]:
       # Handle Enforcer job openings
+      # No increase or decrease for educators as it's a really good job - Vanilla
       if not ele.hasAttribute("job_changes"):
         fail(f"{ele.name} missing job_changes??")
       jobele = ele.getElement("job_changes")
@@ -177,27 +178,33 @@ def process_crime(infilename, outfilename):
       # Add another stanza for really bad planets to both gestalt and non
       jobele.subelements.extend(enforcer_increase[ele.name])
 
-      # Handle building Precincts
+      # Handle building Precincts and State Academy
       if not ele.hasAttribute("buildings"):
         fail(f"{ele.name} missing buildings??")
       buildele = ele.getElement("buildings")
-      if not buildele.hasAttribute("precinct"):
-        fail(f"{buildele.name} missing precinct??")
-      precele = buildele.getElement("precinct")
-      if not precele.hasAttribute("available"):
-        fail(f"{precele.name} missing available??")
-      avaele = precele.getElement("available")
-      if not avaele.hasAttribute("planet_crime"):
-        fail(f"{avaele.name} missing planet_crime??")
-      pcele = avaele.getElement("planet_crime")
 
-      newele = cwp.stringToCW("OR = { }")
-      # Combine the vanilla planet_crime check with a new one of our making
-      newele[0].subelements.extend([pcele])
-      newele[0].subelements.extend(precinct_increase[ele.name])
+      # DRY but gestalt does not get state academy
+      for building in [ "precinct", "state_academy" ]:
+        if building == "state_academy" and ele.name != "automate_crime_management":
+          continue
+        if not buildele.hasAttribute(building):
+          fail(f"{ele.name} {buildele.name} missing {building}??")
+        precele = buildele.getElement(building)
+        if not precele.hasAttribute("available"):
+          fail(f"{precele.name} missing available??")
+        avaele = precele.getElement("available")
+        if not avaele.hasAttribute("planet_crime"):
+          fail(f"{avaele.name} missing planet_crime??")
+        pcele = avaele.getElement("planet_crime")
 
-      avaele.subelements.remove(pcele)
-      avaele.subelements.extend(newele)
+        # Combine the vanilla planet_crime check with a new one of our making
+        newele = cwp.stringToCW("OR = { }")
+        newele[0].subelements.extend([pcele])
+        newele[0].subelements.extend(precinct_increase[ele.name])
+
+        avaele.subelements.remove(pcele)
+        avaele.subelements.extend(newele)
+
       # Add the modified top level element to our write list
       outlist.append(ele)
 

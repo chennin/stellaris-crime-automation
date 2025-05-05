@@ -13,7 +13,7 @@ automate_crime_management = {
 			available = {
 				NOT = { has_available_jobs = enforcer }
 				NOT = { has_forbidden_jobs = enforcer }
-				any_owned_pop = { can_work_specific_job = enforcer }
+				any_owned_pop_group = { can_work_specific_job = enforcer }
 				NOR = {
 					AND = {
 						has_building = building_precinct_house
@@ -22,6 +22,40 @@ automate_crime_management = {
 					has_building = building_hall_judgment
 					num_buildings = {
 						type = building_precinct_house
+						value >= 3
+					}
+				}
+				OR = {
+					planet_crime > 30
+					planet_stability < @stabilitylevel2
+					AND = {
+						planet_crime > 10
+						OR = {
+							has_modifier = criminal_underworld
+							has_modifier = gang_wars
+							has_modifier = center_of_drug_trade
+							has_modifier = mob_rule
+						}
+					}
+					AND = {
+						planet_crime > 0
+						has_branch_office = yes
+						branch_office_owner = { is_criminal_syndicate = yes }
+					}
+				}
+			}
+		}
+		state_academy = {
+			building = building_state_academy
+			available = {
+				NOR = {
+					AND = {
+						has_building = building_state_academy
+						owner = { has_technology = tech_colonial_centralization }
+					}
+					has_building = building_center_of_guidance
+					num_buildings = {
+						type = building_state_academy
 						value >= 3
 					}
 				}
