@@ -28,7 +28,10 @@ enforcer = {
 	tags = {
 		crime
 		enforcer
-		telepath
+	}
+	triggered_tags = {
+		trigger = { enforcer_is_telepath_trigger = yes }
+		tags = { telepath }
 	}
 	possible_pre_triggers = {
 		has_owner = yes
