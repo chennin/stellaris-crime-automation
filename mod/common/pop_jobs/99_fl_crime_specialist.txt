@@ -15,23 +15,10 @@ enforcer = {
 			condition_string = BATTLE_THRALL_JOB_TRIGGER
 			weight = 10
 		}
-		swap_type = {
-			trigger = { enforcer_is_telepath_trigger = yes }
-			name = telepath
-			desc = telepath
-			icon = telepath
-			building_icon = building_psi_corps
-			condition_string = SPECIALIST_JOB_TRIGGER
-			weight = 25
-		}
 	}
 	tags = {
 		crime
 		enforcer
-	}
-	triggered_tags = {
-		trigger = { enforcer_is_telepath_trigger = yes }
-		tags = { telepath }
 	}
 	possible_pre_triggers = {
 		has_owner = yes
@@ -39,67 +26,10 @@ enforcer = {
 		is_being_assimilated = no
 		is_sapient = yes
 	}
-	possible = {
-		if = {
-			limit = {
-				planet = { enforcer_is_telepath_trigger = no }
-			}
-			battle_thrall_job_check_trigger = yes
-		}
-		else = {
-			OR = {
-				has_trait = trait_latent_psionic
-				has_trait = trait_psionic
-			}
-		}
-	}
+	possible = { battle_thrall_job_check_trigger = yes }
 	resources = {
 		category = planet_enforcers
 		inline_script = jobs/job_enforcer_triggered_resources
-		produces = {
-			trigger = { enforcer_is_educator_trigger = yes }
-			unity = 5
-		}
-		produces = {
-			trigger = {
-				exists = planet
-				planet = { enforcer_is_telepath_trigger = yes }
-			}
-			unity = 9
-		}
-		produces = {
-			trigger = {
-				exists = planet
-				planet = { enforcer_is_telepath_trigger = yes }
-				exists = owner
-				owner = { has_country_flag = whisperers_covenant_confirmed }
-			}
-			physics_research = 3
-			engineering_research = 3
-			society_research = 3
-		}
-		produces = {
-			trigger = {
-				exists = planet
-				planet = { enforcer_is_telepath_trigger = yes }
-				exists = owner
-				owner = { has_country_flag = whisperers_covenant_rank_1 }
-			}
-			physics_research = 3
-			engineering_research = 3
-			society_research = 3
-		}
-		upkeep = {
-			trigger = { enforcer_is_educator_trigger = yes }
-			consumer_goods = 1
-		}
-		upkeep = {
-			trigger = {
-				exists = planet
-				planet = { enforcer_is_telepath_trigger = yes }
-			}
-			energy = 1
-		}
 	}
 	triggered_planet_modifier = {
 		potential = { enforcer_is_educator_trigger = no }
@@ -119,10 +49,6 @@ enforcer = {
 		modifier = {
 			mult = value:job_weights_modifier|JOB|enforcer|RESOURCE|unity|FACTOR|0.25|
 			owner = { has_active_tradition = tr_domination_judgment_corps }
-		}
-		modifier = {
-			mult = value:job_weights_modifier|JOB|enforcer|RESOURCE|unity|
-			planet = { enforcer_is_telepath_trigger = yes }
 		}
 		modifier = { factor = 50 }
 		modifier = {
