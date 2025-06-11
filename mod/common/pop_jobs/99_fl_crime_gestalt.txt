@@ -11,9 +11,9 @@ patrol_drone = {
 				exists = owner
 				owner = { is_wilderness_empire = yes }
 			}
-			name = tamersymbiont
-			desc = tamersymbiont
-			building_icon = planetary_carapace_1
+			name = immunosymbiont
+			desc = immunosymbiont
+			building_icon = capital_wilderness_3
 			condition_string = DRONE_JOB_TRIGGER
 			weight = 10
 		}
